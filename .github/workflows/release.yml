@@ -1,0 +1,27 @@
+name: release
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+on:
+  release:
+    types: [ published ]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+      - name: Build
+        run: hatch build
+      - name: Publish
+        run: hatch publish --no-prompt
+        env:
+          HATCH_INDEX_USER: __token__
+          HATCH_INDEX_AUTH: ${{ secrets.HATCH_INDEX_AUTH }}
